@@ -1,0 +1,96 @@
+body {
+  background: #EEE;
+  padding-bottom: 10em;
+}
+#purchases {
+  list-style-type: none;
+  margin: 0;
+}
+#purchases li {
+  padding: 1em 0 1em 1em;
+}
+#purchases .meta{
+  float: right;
+  font-size: smaller;
+  color: #999;
+  margin: 0 1em 1em 0;
+}
+pre {
+  font-family: "Courier New", monospace;
+  line-height: 1;
+  color:black;
+  background: white;
+  border: 0;
+  display: inline-block;
+  white-space: pre;
+  padding: 10px 20px;
+  -webkit-border-radius: 10px;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius: 10px;
+  -moz-border-radius-bottomleft: 0;
+  border-radius: 10px;
+  border-bottom-left-radius: 0;
+  position: relative;
+}
+pre:hover:after {
+  content: attr(data-font);
+  font-size: smaller;
+  color: #999;
+  position: absolute;
+  bottom: -1.5em;
+  right: 20px;
+}
+.gravatar{
+  margin-top: -120px;
+  border-radius: 3px;
+}
+.msg-box{
+  margin: 0 0 0 60px;
+}
+#input {
+  background-color: #F5F5F5;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 1em 0 1em 72px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 0 0.25em #ccc;
+}
+#input > .input-append {
+  display: block;
+}
+#hello {
+  background-color: #F5F5F5;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 1em 0 1em 72px;
+  position: block;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 0 0.25em #ccc;
+}
+#hello > .hello-append {
+  display: block;
+}
+#purchase {
+  width:60%;
+  max-width: 11.81em;
+  height: 1.21em;
+  font-family: monospace;
+  font-size: 35px;
+  line-height: 1.3;
+}
+#send {
+  height: 52px;
+}
+#gh {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  opacity: 0.15;
+  transition: opacity 0.25s linear;
+}
+#gh:hover {
+  opacity: 1;
+}

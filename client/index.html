@@ -1,0 +1,87 @@
+<head>
+  <title>debtify!</title>
+</head>
+
+<body>
+  {{> hello}}
+
+  {{#if currentUser}}
+    {{> purchases}}
+    {{> input}}
+  {{/if}}  
+
+</body>
+
+<template name="hello">
+  <div id="hello">
+    <h1>Hello World!</h1>
+    {{greeting}}
+    {{#if currentUser}}
+    {{/if}}  
+    {{loginButtons}}
+  </div>
+</template>
+
+<template name="purchases">
+  <ul id="purchases">
+    {{#each purchases}}
+      {{> purchase}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="users">
+  <ul id="users">
+    {{#each users}}
+      {{> user}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="user">
+  <input type="checkbox" name="buyer" value="{{_id}}"> {{emails.0.address}}<br>
+</template>
+
+<template name="purchase">
+  <li>
+    <div class="meta">
+        <time datetime="{{created}}">{{fromnow created}}</time>
+    </div>
+    <div>
+      <div class="msg-box">
+        <pre>{{title}}</pre>
+        <pre>{{price}}€</pre>
+        <button id="remove" class="btn btn-danger" type="button">x</button>
+      </div>
+      <div class="msg-box">
+	    <ul id="buyersList">
+		  {{#each buyers}}
+	        <pre>{{#getEmail this}}{{/getEmail}}</pre>
+		  {{/each}}
+	    </ul>
+      </div>
+      <img class="gravatar" src="{{gravatar handle}}" title="{{trim handle}}">
+    </div>
+  </li>
+</template>
+
+<template name="input">
+  <div id="input">
+	<h1>Submit new purchase</h1>
+    <form class="input-append">
+       <input id="purchase" class="span4" type="text" placeholder="Title"/>
+       <button id="send" class="btn btn-success" type="button">Send</button>
+    </form>
+    <div class="form-inline">
+      <div class="input-prepend">
+        <span class="add-on">€</span>
+        <input id="price" type="text" placeholder="Price"/>
+      </div>
+    </div>
+    <h3>Buyers</h3>
+    <form class="">
+      {{> users}}
+	</form>
+    <a id="gh" href="https://github.com/tableflip/meet-meteor/tree/master/database-everywhere/02-subpub-banter" title="Fork me on GitHub"><img src="img/GitHub-Mark-32px.png" alt="GitHub logo"/></a>
+  </div>
+</template>
