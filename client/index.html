@@ -7,10 +7,10 @@
 	{{> menu}}
 	<br><br>
     {{#if currentUser}}
+    {{> input}}
     <div class="row">
       <div class="span6">
           {{> purchases}}
-          {{> input}}
       </div>
       <div class="span6">
       
@@ -51,23 +51,22 @@
 
 <template name="purchase">
   <li>
-    <div>
-      <table class="purchase-box">
-        <tr>
-          <td><h3>{{title}}</h3></td>
-          <td><small style="float:right" datetime="{{created}}">{{fromnow created}}</small></td>
-          <td><button id="remove" class="btn btn-danger" type="button">x</button></td>
-        </tr>
-        <tr>
-		  <td><img class="gravatar" src="{{gravatar handle}}" title="{{trim handle}}"></td>
-          <td>Buyers: 
-		  {{#each buyers}}
-	        <img class="" src="{{getGravatarFromId this}}" title="">
-		  {{/each}}
-		  </td>
-          <td><h3>{{price}}€</h3></td>
-        </tr>
-      </table>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title"><button id="remove" class="close" type="button">&times;</button>
+        {{title}}</h1>
+      </div>
+      <div class="panel-body" style="float:clear" >
+        <img style="float:left" src="{{gravatar handle}}" title="{{trim handle}}">
+		<h3 style="float:right" >{{price}}€</h3>
+      </div>
+      <div class="panel-footer">
+		Buyers: 
+        {{#each buyers}}
+	      <img class="" src="{{getGravatarFromId this}}" title="">
+		{{/each}}
+        <small style="float:right" datetime="{{created}}">{{fromnow created}}</small>
+      </div>
     </div>
   </li>
 </template>
