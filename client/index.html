@@ -3,31 +3,47 @@
 </head>
 
 <body>
-  {{> hello}}
-
-  {{#if currentUser}}
-    {{> purchases}}
-    {{> input}}
-  {{/if}}  
-
+  <div class="container-fluid">
+	{{> menu}}
+	<br><br>
+    {{#if currentUser}}
+    <div class="row">
+      <div class="span6">
+          {{> purchases}}
+          {{> input}}
+      </div>
+      <div class="span6">
+      
+      </div>
+    </div>
+    {{/if}}  
+  </div>
 </body>
 
-<template name="hello">
-  <div id="hello">
-    <h1>Hello World!</h1>
-    {{greeting}}
-    {{#if currentUser}}
-    {{/if}}  
-    {{loginButtons}}
+<template name="menu">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-th-list"></span>
+      </a>
+      <a href="#" class="brand">debtify</a>
+      <div class="nav-collapse collapse">
+		<ul class="nav">
+          <li><a>{{loginButtons}}</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <template name="purchases">
+  <div style="overflow:auto">
   <ul id="purchases">
     {{#each purchases}}
       {{> purchase}}
     {{/each}}
   </ul>
+  </div>
 </template>
 
 <template name="users">
@@ -44,23 +60,23 @@
 
 <template name="purchase">
   <li>
-    <div class="meta">
-        <time datetime="{{created}}">{{fromnow created}}</time>
-    </div>
     <div>
-      <div class="msg-box">
-        <pre>{{title}}</pre>
-        <pre>{{price}}€</pre>
-        <button id="remove" class="btn btn-danger" type="button">x</button>
-      </div>
-      <div class="msg-box">
-	    <ul id="buyersList">
+      <table class="purchase-box">
+        <tr>
+          <td><h3>{{title}}</h3></td>
+          <td><small style="float:right" datetime="{{created}}">{{fromnow created}}</small></td>
+          <td><button id="remove" class="btn btn-danger" type="button">x</button></td>
+        </tr>
+        <tr>
+		  <td><img class="gravatar" src="{{gravatar handle}}" title="{{trim handle}}"></td>
+          <td>Buyers: 
 		  {{#each buyers}}
-	        <pre>{{#getEmail this}}{{/getEmail}}</pre>
+	        <img class="" src="{{getGravatarFromId this}}" title="">
 		  {{/each}}
-	    </ul>
-      </div>
-      <img class="gravatar" src="{{gravatar handle}}" title="{{trim handle}}">
+		  </td>
+          <td><h3>{{price}}€</h3></td>
+        </tr>
+      </table>
     </div>
   </li>
 </template>

@@ -1,4 +1,5 @@
 Purchases = new Meteor.Collection("purchases")
+Debts = new Meteor.Collection("debts")
 
 Purchases.allow({
   insert: function (userId, purchase) {
@@ -11,5 +12,12 @@ Purchases.allow({
 	} else {
 	  return false
     }
+  }
+})
+
+Debts.allow({
+  insert: function (userId, debt) {
+    debt.created = Date.now() // Add timestamp server side so client can't effect message ordering
+    return true
   }
 })

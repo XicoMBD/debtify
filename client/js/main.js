@@ -1,7 +1,5 @@
-// Max messages to retrieve
-var LIMIT = 25
-
-Meteor.subscribe("purchases", {channel: window.location.pathname, limit: LIMIT})
+Meteor.subscribe("debts")
+Meteor.subscribe("purchases")
 Meteor.subscribe("allUserData");
 
 // Send a message by inserting into the Messages collection
@@ -16,21 +14,25 @@ function submitPurchase () {
     });
   
   Purchases.insert({
-      channel: window.location.pathname
-    , creator: Meteor.userId()
+    creator: Meteor.userId()
     , handle: Meteor.user().emails[0].address
     , price: $("#price").val()
     , title: title.val()
     , buyers: buyers
   })
   
+  for (var i = 0; i < buyers.length; i++) {
+    Debts.insert({
+      creditor: Meteor.userId()
+      , debtor: buyers[i]
+      , price: ($("#price").val() / buyers.length)
+      , title: title.val()
+      , paid: (Meteor.userId() == buyers[i])
+    })
+  }
+  
   title.val("")
 }
-
-Handlebars.registerHelper('getEmail', function(id) {
-  console.log(id);
-  return Meteor.users.findOne({"_id": id}).emails[0].address;
-});
 
 // Events for sending messages and saving handle to localStorage
 Template.input.events({
@@ -59,7 +61,7 @@ Template.purchase.events({
 
 // Get the messages for the template
 Template.purchases.purchases = function () {
-  return Purchases.find({}, {limit: LIMIT, sort: [["created", "desc"]]}).fetch().reverse()
+  return Purchases.find({}).fetch().reverse()
 }
 
 // Get the users for the template
@@ -75,6 +77,14 @@ Template.purchases.rendered = function () {
 // Turn an email address into a gravatar URL
 Template.purchase.gravatar = function (email) {
   return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=50&d=retro"
+}
+
+// Turn an id into a gravatar URL
+Template.purchase.getGravatarFromId = function (id) {
+  if(Meteor.users.findOne({"_id": id}).emails) {
+    var email = Meteor.users.findOne({"_id": id}).emails[0].address;
+    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=20&d=retro"
+  }
 }
 
 // Create a fuzzy from time from a timestamp
