@@ -19,5 +19,12 @@ Debts.allow({
   insert: function (userId, debt) {
     debt.created = Date.now() // Add timestamp server side so client can't effect message ordering
     return true
+  },
+  remove: function (userId, debt) {
+    if(userId == debt.creditor) {
+		return true
+	} else {
+	  return false
+    }
   }
 })

@@ -26,10 +26,12 @@
       <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
         <span class="icon-th-list"></span>
       </a>
-      <a href="#" class="brand">debtify</a>
+      <a href="#" class="brand" style="margin-left:1em">debtify</a>
       <div class="nav-collapse collapse">
 		<ul class="nav">
-          <li><a data-toggle="modal" href="#addPurchaseModal">Add new purchase</a></li>
+          {{#if currentUser}}
+            <li><a data-toggle="modal" href="#addPurchaseModal">Add new purchase</a></li>
+          {{/if}}
           <li><a>{{loginButtons}}</a></li>
         </ul>
       </div>
@@ -45,18 +47,6 @@
     {{/each}}
   </ul>
   </div>
-</template>
-
-<template name="users">
-  <ul id="users">
-    {{#each users}}
-      {{> user}}
-    {{/each}}
-  </ul>
-</template>
-
-<template name="user">
-  <input type="checkbox" name="buyer" value="{{_id}}"> {{emails.0.address}}<br>
 </template>
 
 <template name="purchase">
@@ -80,6 +70,18 @@
       </table>
     </div>
   </li>
+</template>
+
+<template name="users">
+  <ul id="users">
+    {{#each users}}
+      {{> user}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="user">
+  <input type="checkbox" name="buyer" value="{{_id}}"> {{emails.0.address}}<br>
 </template>
 
 <template name="input">

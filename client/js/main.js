@@ -19,19 +19,20 @@ function submitPurchase () {
     , price: $("#price").val()
     , title: title.val()
     , buyers: buyers
-  })
-  
-  for (var i = 0; i < buyers.length; i++) {
-    Debts.insert({
-      creditor: Meteor.userId()
-      , debtor: buyers[i]
-      , price: ($("#price").val() / buyers.length)
-      , title: title.val()
-      , paid: (Meteor.userId() == buyers[i])
-    })
-  }
-  
-  title.val("")
+  }, function(error, result){
+	  for (var i = 0; i < buyers.length; i++) {
+		Debts.insert({
+			purchaseId: result
+		  , title: title.val()
+		  , creditor: Meteor.userId()
+		  , debtor: buyers[i]
+		  , price: ($("#price").val() / buyers.length)
+		  , paid: (Meteor.userId() == buyers[i])
+		})
+	  }
+	  
+	  title.val("")
+  });
 }
 
 // Events for sending messages and saving handle to localStorage
@@ -56,6 +57,10 @@ Template.purchase.events({
   "click #remove": function () {
 	console.log(this._id);
     Purchases.remove(this._id);
+    var associatedDebts = Debts.find({"purchaseId": this._id}).fetch();
+    for (var i = 0; i < associatedDebts.length; i++) {
+		Debts.remove(associatedDebts[i]._id);
+	}
   }
 });
 
@@ -71,7 +76,7 @@ Template.users.users = function () {
 
 // When the messages have been rendered, scroll to the bottom of the page
 Template.purchases.rendered = function () {
-  $("html, body").animate({scrollTop: $(document).height()}, 1000)
+  //$("html, body").animate({scrollTop: $(document).height()}, 1000)
 }
 
 // Turn an email address into a gravatar URL
