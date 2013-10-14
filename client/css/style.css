@@ -51,9 +51,6 @@ body {
   font-size: 35px;
   line-height: 1.3;
 }
-#send {
-  height: 52px;
-}
 #gh {
   position: absolute;
   top: 1em;

@@ -29,6 +29,7 @@
       <a href="#" class="brand">debtify</a>
       <div class="nav-collapse collapse">
 		<ul class="nav">
+          <li><a data-toggle="modal" href="#addPurchaseModal">Add new purchase</a></li>
           <li><a>{{loginButtons}}</a></li>
         </ul>
       </div>
@@ -82,22 +83,34 @@
 </template>
 
 <template name="input">
-  <div id="input">
-	<h1>Submit new purchase</h1>
-    <form class="input-append">
-       <input id="purchase" class="span4" type="text" placeholder="Title"/>
-       <button id="send" class="btn btn-success" type="button">Send</button>
-    </form>
-    <div class="form-inline">
-      <div class="input-prepend">
-        <span class="add-on">€</span>
-        <input id="price" type="text" placeholder="Price"/>
-      </div>
-    </div>
-    <h3>Buyers</h3>
-    <form class="">
-      {{> users}}
-	</form>
-    <a id="gh" href="https://github.com/tableflip/meet-meteor/tree/master/database-everywhere/02-subpub-banter" title="Fork me on GitHub"><img src="img/GitHub-Mark-32px.png" alt="GitHub logo"/></a>
-  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="addPurchaseModal" tabindex="-1" role="dialog" aria-labelledby="addPurchaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Submit new purchase</h4>
+        </div>
+        <div class="modal-body">
+          <form class="input-append">
+		    <input id="purchase" class="span4" type="text" placeholder="Title"/>
+		  </form>
+		  <div class="form-inline">
+		    <div class="input-prepend">
+			  <span class="add-on">€</span>
+			  <input id="price" type="text" placeholder="Price"/>
+		    </div>
+		  </div>
+		  <h3>Buyers</h3>
+		  <form class="">
+		    {{> users}}
+		  </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  <button id="send" class="btn btn-success" type="button"  data-dismiss="modal">Send</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 </template>
