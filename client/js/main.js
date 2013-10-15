@@ -36,7 +36,7 @@ function submitPurchase () {
 }
 
 // Events for sending messages and saving handle to localStorage
-Template.input.events({
+Template.addPurchase.events({
   "click #send": submitPurchase,
   "keyup #handle": function () {
     if (localStorage) {
@@ -63,6 +63,48 @@ Template.purchase.events({
 	}
   }
 });
+
+
+// Get the messages for the template
+Template.debts.debts = function () {
+  var allDebts = Debts.find({"creditor":Meteor.userId()}).fetch();
+  allDebts.concat(Debts.find({"debts":Meteor.userId()}).fetch());
+  
+  var debtsByUser = [];
+  for (var i = 0; i < allDebts.length; i++) {
+	if(allDebts[i].paid == false) {
+	  var debt = new Object();
+	  if(allDebts[i].debtor == Meteor.userId()) {
+        debt.user = allDebts[i].creditor;
+        debt.value = allDebts[i].price;
+	  } else {
+	    debt.user = allDebts[i].debtor;
+	    debt.value = -allDebts[i].price;
+	  }
+	  
+	  for (var o = 0; o < debtsByUser.length && debtsByUser[o].user != debt.user; o++);
+	
+      if(debtsByUser[o]) {
+        debtsByUser[o].value += debt.value;
+        if(debtsByUser[o].value < 0) {
+          debtsByUser[o].class = "success";
+	    } else {
+		  debtsByUser[o].class = "danger";
+	    }
+      } else {
+		if(debt.value < 0) {
+          debt.class = "success";
+	    } else {
+		  debt.class = "danger";
+	    }
+        debtsByUser.push(debt);
+      }
+    }
+  }
+  console.log(debtsByUser);
+  
+  return debtsByUser
+}
 
 // Get the messages for the template
 Template.purchases.purchases = function () {
@@ -92,13 +134,21 @@ Template.purchase.getGravatarFromId = function (id) {
   }
 }
 
+// Turn an id into a gravatar URL
+Template.debt.getGravatarFromIdYeah = function (id) {
+  if(Meteor.users.findOne({"_id": id}) && Meteor.users.findOne({"_id": id}).emails) {
+    var email = Meteor.users.findOne({"_id": id}).emails[0].address;
+    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=200&d=retro"
+  }
+}
+
 // Create a fuzzy from time from a timestamp
 Template.purchase.fromnow = function (ms) {
   return moment(ms).fromNow()
 }
 
 // Get or generate the user's handle
-Template.input.rendered = function () {
+Template.addPurchase.rendered = function () {
   var handle = localStorage.getItem("handle") || Math.random().toString(36).substring(7) + "@gravatar.com"
   $("#handle").val(handle)
 }

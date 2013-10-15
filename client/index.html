@@ -7,13 +7,13 @@
 	{{> menu}}
 	<br><br>
     {{#if currentUser}}
-    {{> input}}
+    {{> addPurchase}}
     <div class="row">
       <div class="span6">
-          {{> purchases}}
+        {{> purchases}}
       </div>
-      <div class="span6">
-      
+      <div class="span5" style="float:right">
+        {{> debts}}
       </div>
     </div>
     {{/if}}  
@@ -53,11 +53,14 @@
   <li>
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h1 class="panel-title"><button id="remove" class="close" type="button">&times;</button>
-        {{title}}</h1>
+        <div class="panel-title">
+		  <button id="remove" class="close" type="button">&times;</button>
+          {{title}}
+        </div>
       </div>
       <div class="panel-body" style="float:clear" >
         <img style="float:left" src="{{gravatar handle}}" title="{{trim handle}}">
+        &nbsp;<button id="registerPayment" class="btn btn-success" type="button">Register Payment</button>
 		<h3 style="float:right" >{{price}}€</h3>
       </div>
       <div class="panel-footer">
@@ -71,6 +74,28 @@
   </li>
 </template>
 
+<template name="debts">
+  <div class="col-sm-6 col-md-3">
+	<div class="row">
+    {{#each debts}}
+      {{> debt}}
+    {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="debt">
+    <div class="panel panel-{{class}}" style="width:230px">
+      <div class="panel-heading" style="width:fit-content">
+		{{value}} €
+      </div>
+      <div class="panel-body" style="float:clear" style="width:fit-content">
+        <img style="float:left" src="{{getGravatarFromIdYeah user}}" title="{{trim user}}">
+      </div>
+    </div>
+</template>
+
+
 <template name="users">
   <ul id="users">
     {{#each users}}
@@ -83,9 +108,9 @@
   <input type="checkbox" name="buyer" value="{{_id}}"> {{emails.0.address}}<br>
 </template>
 
-<template name="input">
+<template name="addPurchase">
   <!-- Modal -->
-  <div class="modal fade" id="addPurchaseModal" tabindex="-1" role="dialog" aria-labelledby="addPurchaseModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addPurchaseModal" tabindex="-1" role="dialog" aria-labelledby="addPurchaseModalLabel" aria-hidden="true" style="display:none">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
