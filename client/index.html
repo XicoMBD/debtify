@@ -10,10 +10,16 @@
     {{> addPurchase}}
     <div class="row">
       <div class="span6">
+		<h2>Purchases</h2>
         {{> purchases}}
       </div>
-      <div class="span5" style="float:right">
+      <div class="span3">
+		<h2>Debts</h2>
         {{> debts}}
+      </div>
+      <div class="span3">
+		<h2>Payments</h2>
+        {{> payments}}
       </div>
     </div>
     {{/if}}  
@@ -41,7 +47,7 @@
 
 <template name="purchases">
   <div style="overflow:auto">
-  <ul id="purchases">
+  <ul id="coolList">
     {{#each purchases}}
       {{> purchase}}
     {{/each}}
@@ -60,7 +66,6 @@
       </div>
       <div class="panel-body" style="float:clear" >
         <img style="float:left" src="{{gravatar handle}}" title="{{trim handle}}">
-        &nbsp;<button id="registerPayment" class="btn btn-success" type="button">Register Payment</button>
 		<h3 style="float:right" >{{price}}€</h3>
       </div>
       <div class="panel-footer">
@@ -75,24 +80,63 @@
 </template>
 
 <template name="debts">
-  <div class="col-sm-6 col-md-3">
-	<div class="row">
-    {{#each debts}}
+  <div class="row">
+    <ul id="coolList">
+	{{#each debts}}
       {{> debt}}
     {{/each}}
-    </div>
+    </ul>
   </div>
 </template>
 
 <template name="debt">
-    <div class="panel panel-{{class}}" style="width:230px">
+  <li>
+    <div class="panel panel-{{class}}">
       <div class="panel-heading" style="width:fit-content">
 		{{value}} €
       </div>
       <div class="panel-body" style="float:clear" style="width:fit-content">
         <img style="float:left" src="{{getGravatarFromIdYeah user}}" title="{{trim user}}">
+        
+        <div class="form-inline" style="float:right">
+          <form class="input-append input-prepend">
+            <span class="add-on" style="height:40px">€</span>
+            <input id="paymentValue" class="span1" type="text" placeholder="Amount" style="height:40px"/>
+            <button id="registerPayment" class="btn btn-{{class}}" type="button" style="height:50px">{{action}}</button>
+          </form>
+        </div>
       </div>
     </div>
+  </ul>
+</template>
+
+<template name="payments">
+  <div class="row">
+    <ul id="coolList">
+	{{#each payments}}
+      {{> payment}}
+    {{/each}}
+    </ul>
+  </div>
+</template>
+
+<template name="payment">
+  <li>
+    <div class="panel panel-default">
+      <div class="panel-heading" style="width:fit-content">
+        <img src="{{getGravatarFromId payer}}" title="{{trim payer}}">
+        ->
+        <img src="{{getGravatarFromId payee}}" title="{{trim payee}}">
+      </div>
+      <div class="panel-body" style="float:clear" style="width:fit-content">
+		<b style="float:left" >{{amount}} €</b>
+
+        <small style="float:right" datetime="{{created}}">{{fromnow created}}</small>
+      </div>
+      <!--<div class="panel-footer">
+      </div>-->
+    </div>
+  </ul>
 </template>
 
 

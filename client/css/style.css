@@ -2,11 +2,11 @@ body {
   background: #EEE;
   padding-bottom: 10em;
 }
-#purchases {
+#coolList {
   list-style-type: none;
   margin: 0;
 }
-#purchases li {
+#coolList li {
   padding: 1em 0 1em 1em;
 }
 .gravatar{

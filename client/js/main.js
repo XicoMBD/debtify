@@ -1,5 +1,6 @@
-Meteor.subscribe("debts")
 Meteor.subscribe("purchases")
+Meteor.subscribe("debts")
+Meteor.subscribe("payments")
 Meteor.subscribe("allUserData");
 
 // Send a message by inserting into the Messages collection
@@ -64,51 +65,128 @@ Template.purchase.events({
   }
 });
 
+// Send a message by inserting into the Messages collection
+function registerPayment (debt) {
+  var paymentValue = $("#paymentValue")
+  if (!paymentValue.val()) return;
+  
+  if(debt.value > 0) {
+    Payments.insert({
+      creator: Meteor.userId()
+      , payer: Meteor.userId()
+      , payee: debt.user
+      , amount: paymentValue.val()
+      , confirmed: false
+      , used: false
+    }, function(error, result){
+      paymentValue.val("")
+    });
+  } else {
+    Payments.insert({
+      creator: Meteor.userId()
+      , payer: debt.user
+      , payee: Meteor.userId()
+      , amount: paymentValue.val()
+      , confirmed: false
+      , used: false
+    }, function(error, result){
+      paymentValue.val("")
+    });
+  }
+}
 
 // Get the messages for the template
 Template.debts.debts = function () {
   var allDebts = Debts.find({"creditor":Meteor.userId()}).fetch();
-  allDebts.concat(Debts.find({"debts":Meteor.userId()}).fetch());
+  allDebts = allDebts.concat(Debts.find({"debtor":Meteor.userId()}).fetch());
+  var allPayments = Payments.find({"payee":Meteor.userId()}).fetch();
+  allPayments = allPayments.concat(Payments.find({"payer":Meteor.userId()}).fetch());
   
   var debtsByUser = [];
+  
   for (var i = 0; i < allDebts.length; i++) {
 	if(allDebts[i].paid == false) {
 	  var debt = new Object();
 	  if(allDebts[i].debtor == Meteor.userId()) {
         debt.user = allDebts[i].creditor;
-        debt.value = allDebts[i].price;
+        debt.value = Number(allDebts[i].price);
 	  } else {
 	    debt.user = allDebts[i].debtor;
-	    debt.value = -allDebts[i].price;
+	    debt.value = -Number(allDebts[i].price);
 	  }
 	  
 	  for (var o = 0; o < debtsByUser.length && debtsByUser[o].user != debt.user; o++);
 	
       if(debtsByUser[o]) {
         debtsByUser[o].value += debt.value;
-        if(debtsByUser[o].value < 0) {
-          debtsByUser[o].class = "success";
-	    } else {
-		  debtsByUser[o].class = "danger";
-	    }
       } else {
-		if(debt.value < 0) {
-          debt.class = "success";
-	    } else {
-		  debt.class = "danger";
-	    }
         debtsByUser.push(debt);
       }
     }
   }
-  console.log(debtsByUser);
+
+  for (var i = 0; i < allPayments.length; i++) {
+	if(allPayments[i].used == false) {
+	  var debt = new Object();
+	  if(allPayments[i].payer == Meteor.userId()) {
+        debt.user = allPayments[i].payee;
+        debt.value = -Number(allPayments[i].amount);
+	  } else {
+	    debt.user = allPayments[i].payer;
+	    debt.value = Number(allPayments[i].amount);
+	  }
+	  
+	  for (var o = 0; o < debtsByUser.length && debtsByUser[o].user != debt.user; o++);
+	
+      if(debtsByUser[o]) {
+        debtsByUser[o].value += debt.value;
+      } else {
+        debtsByUser.push(debt);
+      }
+    }
+  }
+  
+  for (var o = 0; o < debtsByUser.length; o++){
+    if(debtsByUser[o].value < 0) {
+      debtsByUser[o].class = "success";
+      debtsByUser[o].action = "Receive";
+	} else if(debtsByUser[o].value > 0) {
+	  debtsByUser[o].class = "danger";
+      debtsByUser[o].action = "Pay";
+	} else {
+	  var associatedDebts = Debts.find({"debtor": Meteor.userId(), "creditor": debtsByUser[o].user}).fetch();
+	  associatedDebts = associatedDebts.concat(Debts.find({"creditor": Meteor.userId(), "debtor": debtsByUser[o].user}).fetch());
+	  var associatedPayments = Payments.find({"payer": Meteor.userId(), "payee": debtsByUser[o].user}).fetch();
+	  associatedPayments = associatedPayments.concat(Payments.find({"payee": Meteor.userId(), "payer": debtsByUser[o].user}).fetch());
+	  
+      for (var i = 0; i < associatedDebts.length; i++) {
+        Debts.update(associatedDebts[i]._id, {$set: {paid:true}});
+      }
+      for (var i = 0; i < associatedPayments.length; i++) {
+        Payments.update(associatedPayments[i]._id, {$set: {used:true}});
+      }
+	}
+  }
   
   return debtsByUser
 }
 
+// When the remove button is clicked on a chat message, delete
+// that message.
+Template.debt.events({
+  "click #registerPayment": function () {
+	  registerPayment(this);
+  }
+});
+
 // Get the messages for the template
 Template.purchases.purchases = function () {
-  return Purchases.find({}).fetch().reverse()
+  return Purchases.find().fetch()
+}
+
+// Get the messages for the template
+Template.payments.payments = function () {
+  return Payments.find().fetch()
 }
 
 // Get the users for the template
@@ -127,6 +205,19 @@ Template.purchase.gravatar = function (email) {
 }
 
 // Turn an id into a gravatar URL
+Template.payment.getGravatarFromId = function (id) {
+  if(Meteor.users.findOne({"_id": id}).emails) {
+    var email = Meteor.users.findOne({"_id": id}).emails[0].address;
+    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=20&d=retro"
+  }
+}
+
+// Create a fuzzy from time from a timestamp
+Template.payment.fromnow = function (ms) {
+  return moment(ms).fromNow()
+}
+
+// Turn an id into a gravatar URL
 Template.purchase.getGravatarFromId = function (id) {
   if(Meteor.users.findOne({"_id": id}).emails) {
     var email = Meteor.users.findOne({"_id": id}).emails[0].address;
@@ -138,7 +229,7 @@ Template.purchase.getGravatarFromId = function (id) {
 Template.debt.getGravatarFromIdYeah = function (id) {
   if(Meteor.users.findOne({"_id": id}) && Meteor.users.findOne({"_id": id}).emails) {
     var email = Meteor.users.findOne({"_id": id}).emails[0].address;
-    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=200&d=retro"
+    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=50&d=retro"
   }
 }
 
