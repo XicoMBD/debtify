@@ -7,5 +7,5 @@ standard-app-packages
 preserve-inputs
 accounts-base
 accounts-ui
-accounts-password
 bootstrap
+accounts-facebook

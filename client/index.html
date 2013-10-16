@@ -65,13 +65,13 @@
         </div>
       </div>
       <div class="panel-body" style="float:clear" >
-        <img style="float:left" src="{{gravatar handle}}" title="{{trim handle}}">
+        <img style="float:left" src="{{getPicture creator}}" style="width:50px;">
 		<h3 style="float:right" >{{price}}€</h3>
       </div>
       <div class="panel-footer">
 		Buyers: 
         {{#each buyers}}
-	      <img class="" src="{{getGravatarFromId this}}" title="">
+	      <img class="" src="{{getPicture this}}" title=""  style="width:20px">
 		{{/each}}
         <small style="float:right" datetime="{{created}}">{{fromnow created}}</small>
       </div>
@@ -96,7 +96,7 @@
 		{{value}} €
       </div>
       <div class="panel-body" style="float:clear" style="width:fit-content">
-        <img style="float:left" src="{{getGravatarFromIdYeah user}}" title="{{trim user}}">
+        <img style="float:left" src="{{getPicture user}}" title="{{trim user}}">
         
         <div class="form-inline" style="float:right">
           <form class="input-append input-prepend">
@@ -124,9 +124,9 @@
   <li>
     <div class="panel panel-default">
       <div class="panel-heading" style="width:fit-content">
-        <img src="{{getGravatarFromId payer}}" title="{{trim payer}}">
+        <img src="{{getPicture payer}}" title="{{trim payer}}">
         ->
-        <img src="{{getGravatarFromId payee}}" title="{{trim payee}}">
+        <img src="{{getPicture payee}}" title="{{trim payee}}">
       </div>
       <div class="panel-body" style="float:clear" style="width:fit-content">
 		<b style="float:left" >{{amount}} €</b>
@@ -149,7 +149,7 @@
 </template>
 
 <template name="user">
-  <input type="checkbox" name="buyer" value="{{_id}}"> {{emails.0.address}}<br>
+  <input type="checkbox" name="buyer" value="{{_id}}"> <img src="{{profile.picture}}" title="{{profile.name}}" style="width:20px"> {{profile.name}}<br>
 </template>
 
 <template name="addPurchase">

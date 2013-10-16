@@ -17,7 +17,6 @@ function submitPurchase () {
   
   Purchases.insert({
     creator: Meteor.userId()
-    , handle: Meteor.user().emails[0].address
     , price: price
     , title: title
     , buyers: buyers
@@ -206,10 +205,9 @@ Template.purchase.gravatar = function (email) {
 }
 
 // Turn an id into a gravatar URL
-Template.payment.getGravatarFromId = function (id) {
-  if(Meteor.users.findOne({"_id": id}) && Meteor.users.findOne({"_id": id}).emails) {
-    var email = Meteor.users.findOne({"_id": id}).emails[0].address;
-    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=20&d=retro"
+Template.payment.getPicture = function (id) {
+  if(Meteor.users.findOne({"_id": id})) {
+    return Meteor.users.findOne({"_id": id}).profile.picture;
   }
 }
 
@@ -219,18 +217,16 @@ Template.payment.fromnow = function (ms) {
 }
 
 // Turn an id into a gravatar URL
-Template.purchase.getGravatarFromId = function (id) {
-  if(Meteor.users.findOne({"_id": id}) && Meteor.users.findOne({"_id": id}).emails) {
-    var email = Meteor.users.findOne({"_id": id}).emails[0].address;
-    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=20&d=retro"
+Template.purchase.getPicture = function (id) {
+  if(Meteor.users.findOne({"_id": id})) {
+    return Meteor.users.findOne({"_id": id}).profile.picture;
   }
 }
 
 // Turn an id into a gravatar URL
-Template.debt.getGravatarFromIdYeah = function (id) {
-  if(Meteor.users.findOne({"_id": id}) && Meteor.users.findOne({"_id": id}).emails) {
-    var email = Meteor.users.findOne({"_id": id}).emails[0].address;
-    return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=50&d=retro"
+Template.debt.getPicture = function (id) {
+  if(Meteor.users.findOne({"_id": id})) {
+    return Meteor.users.findOne({"_id": id}).profile.picture;
   }
 }
 

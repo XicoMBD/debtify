@@ -11,6 +11,18 @@ Meteor.publish("payments", function (opts) {
 })
 
 Meteor.publish("allUserData", function () {
-  return Meteor.users.find({}, {fields: {"emails.address": 1}});
+  return Meteor.users.find({}, {fields: {"profile": 1}});
 });
 
+Accounts.onCreateUser(function(options, user) {
+    if (options.profile) {
+        options.profile.picture = "http://graph.facebook.com/" + user.services.facebook.id + "/picture/";
+        user.profile = options.profile;
+    }
+    return user;
+});
+
+//Meteor.users.remove({});
+//Payments.remove({});
+//Purchases.remove({});
+//Debts.remove({});
