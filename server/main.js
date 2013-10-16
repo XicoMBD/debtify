@@ -13,3 +13,4 @@ Meteor.publish("payments", function (opts) {
 Meteor.publish("allUserData", function () {
   return Meteor.users.find({}, {fields: {"emails.address": 1}});
 });
+

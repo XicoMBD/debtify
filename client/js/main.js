@@ -5,9 +5,10 @@ Meteor.subscribe("allUserData");
 
 // Send a message by inserting into the Messages collection
 function submitPurchase () {
-  var title = $("#purchase")
+  var title = $("#purchase").val()
+  var price = $("#price").val()
   
-  if (!title.val()) return;
+  if (!title || title == "") return;
   
   var buyers = [];
     $('input[name=buyer]:checked').each(function() {
@@ -17,23 +18,23 @@ function submitPurchase () {
   Purchases.insert({
     creator: Meteor.userId()
     , handle: Meteor.user().emails[0].address
-    , price: $("#price").val()
-    , title: title.val()
+    , price: price
+    , title: title
     , buyers: buyers
   }, function(error, result){
 	  for (var i = 0; i < buyers.length; i++) {
 		Debts.insert({
 			purchaseId: result
-		  , title: title.val()
+		  , title: title
 		  , creditor: Meteor.userId()
 		  , debtor: buyers[i]
-		  , price: ($("#price").val() / buyers.length)
+		  , price: (price / buyers.length)
 		  , paid: (Meteor.userId() == buyers[i])
 		})
 	  }
-	  
-	  title.val("")
   });
+  
+  $("#purchase").val()
 }
 
 // Events for sending messages and saving handle to localStorage
@@ -206,7 +207,7 @@ Template.purchase.gravatar = function (email) {
 
 // Turn an id into a gravatar URL
 Template.payment.getGravatarFromId = function (id) {
-  if(Meteor.users.findOne({"_id": id}).emails) {
+  if(Meteor.users.findOne({"_id": id}) && Meteor.users.findOne({"_id": id}).emails) {
     var email = Meteor.users.findOne({"_id": id}).emails[0].address;
     return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=20&d=retro"
   }
@@ -219,7 +220,7 @@ Template.payment.fromnow = function (ms) {
 
 // Turn an id into a gravatar URL
 Template.purchase.getGravatarFromId = function (id) {
-  if(Meteor.users.findOne({"_id": id}).emails) {
+  if(Meteor.users.findOne({"_id": id}) && Meteor.users.findOne({"_id": id}).emails) {
     var email = Meteor.users.findOne({"_id": id}).emails[0].address;
     return "http://www.gravatar.com/avatar/" + $.md5(email) + "?s=20&d=retro"
   }
