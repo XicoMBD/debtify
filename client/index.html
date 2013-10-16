@@ -10,15 +10,15 @@
     {{> addPurchase}}
     <div class="row">
       <div class="span6">
-		<h2>Purchases</h2>
+		<h3>Purchases</h3>
         {{> purchases}}
       </div>
       <div class="span3">
-		<h2>Debts</h2>
+		<h3>Debts</h3>
         {{> debts}}
       </div>
       <div class="span3">
-		<h2>Payments</h2>
+		<h3>Payments</h3>
         {{> payments}}
       </div>
     </div>
@@ -46,29 +46,23 @@
 </template>
 
 <template name="purchases">
-  <div style="overflow:auto">
-  <ul id="coolList">
+  <div class="panel-group">
     {{#each purchases}}
       {{> purchase}}
     {{/each}}
-  </ul>
   </div>
 </template>
 
 <template name="purchase">
-  <li>
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="panel-title">
 		  <button id="remove" class="close" type="button">&times;</button>
-          {{title}}
+          <img src="{{getPicture creator}}" style="width:20px;">
+          &nbsp;<b>{{getName creator}}</b> <small>paid</small> <b>{{price}}€</b> <small>for</small> <b>{{title}}</b>
         </div>
       </div>
       <div class="panel-body" style="float:clear" >
-        <img style="float:left" src="{{getPicture creator}}" style="width:50px;">
-		<h3 style="float:right" >{{price}}€</h3>
-      </div>
-      <div class="panel-footer">
 		Buyers: 
         {{#each buyers}}
 	      <img class="" src="{{getPicture this}}" title=""  style="width:20px">
@@ -76,21 +70,17 @@
         <small style="float:right" datetime="{{created}}">{{fromnow created}}</small>
       </div>
     </div>
-  </li>
 </template>
 
 <template name="debts">
-  <div class="row">
-    <ul id="coolList">
+  <div class="panel-group">
 	{{#each debts}}
       {{> debt}}
     {{/each}}
-    </ul>
   </div>
 </template>
 
 <template name="debt">
-  <li>
     <div class="panel panel-{{class}}">
       <div class="panel-heading" style="width:fit-content">
 		{{value}} €
@@ -101,32 +91,28 @@
         <div class="form-inline" style="float:right">
           <form class="input-append input-prepend">
             <span class="add-on" style="height:40px">€</span>
-            <input id="paymentValue" class="span1" type="text" placeholder="Amount" style="height:40px"/>
+            <input id="paymentValue{{user}}" class="span1" type="text" placeholder="Amount" style="height:40px"/>
             <button id="registerPayment" class="btn btn-{{class}}" type="button" style="height:50px">{{action}}</button>
           </form>
         </div>
       </div>
     </div>
-  </ul>
 </template>
 
 <template name="payments">
-  <div class="row">
-    <ul id="coolList">
+  <div class="panel-group">
 	{{#each payments}}
       {{> payment}}
     {{/each}}
-    </ul>
   </div>
 </template>
 
 <template name="payment">
-  <li>
     <div class="panel panel-default">
       <div class="panel-heading" style="width:fit-content">
-        <img src="{{getPicture payer}}" title="{{trim payer}}">
+        <img src="{{getPicture payer}}" title="{{trim payer}}" style="height:20px">
         ->
-        <img src="{{getPicture payee}}" title="{{trim payee}}">
+        <img src="{{getPicture payee}}" title="{{trim payee}}" style="height:20px">
       </div>
       <div class="panel-body" style="float:clear" style="width:fit-content">
 		<b style="float:left" >{{amount}} €</b>
@@ -136,7 +122,6 @@
       <!--<div class="panel-footer">
       </div>-->
     </div>
-  </ul>
 </template>
 
 

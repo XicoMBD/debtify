@@ -10,6 +10,11 @@ function submitPurchase () {
   
   if (!title || title == "") return;
   
+  if (!price || isNaN(price)) {
+    alert("Please insert a valid number");
+    return;
+  }
+  
   var buyers = [];
     $('input[name=buyer]:checked').each(function() {
       buyers.push($(this).val());
@@ -27,7 +32,7 @@ function submitPurchase () {
 		  , title: title
 		  , creditor: Meteor.userId()
 		  , debtor: buyers[i]
-		  , price: (price / buyers.length)
+		  , price: (price / buyers.length).toFixed(2)
 		  , paid: (Meteor.userId() == buyers[i])
 		})
 	  }
@@ -39,11 +44,6 @@ function submitPurchase () {
 // Events for sending messages and saving handle to localStorage
 Template.addPurchase.events({
   "click #send": submitPurchase,
-  "keyup #handle": function () {
-    if (localStorage) {
-      localStorage.setItem("handle", $("#handle").val())
-    }
-  },
   "keypress #purchase": function (event) {
     if (event.which == 13) {
       event.preventDefault()
@@ -56,7 +56,6 @@ Template.addPurchase.events({
 // that message.
 Template.purchase.events({
   "click #remove": function () {
-	console.log(this._id);
     Purchases.remove(this._id);
     var associatedDebts = Debts.find({"purchaseId": this._id}).fetch();
     for (var i = 0; i < associatedDebts.length; i++) {
@@ -67,15 +66,19 @@ Template.purchase.events({
 
 // Send a message by inserting into the Messages collection
 function registerPayment (debt) {
-  var paymentValue = $("#paymentValue")
-  if (!paymentValue.val()) return;
+  var paymentValue = $("#paymentValue"+debt.user).val()
+  
+  if (!paymentValue || isNaN(paymentValue)) {
+    alert("Please insert a valid number");
+    return;
+  }
   
   if(debt.value > 0) {
     Payments.insert({
       creator: Meteor.userId()
       , payer: Meteor.userId()
       , payee: debt.user
-      , amount: paymentValue.val()
+      , amount: paymentValue
       , confirmed: false
       , used: false
     }, function(error, result){
@@ -86,7 +89,7 @@ function registerPayment (debt) {
       creator: Meteor.userId()
       , payer: debt.user
       , payee: Meteor.userId()
-      , amount: paymentValue.val()
+      , amount: paymentValue
       , confirmed: false
       , used: false
     }, function(error, result){
@@ -181,12 +184,12 @@ Template.debt.events({
 
 // Get the messages for the template
 Template.purchases.purchases = function () {
-  return Purchases.find().fetch()
+  return Purchases.find({}, {sort: [["created", "desc"]]}).fetch()
 }
 
 // Get the messages for the template
 Template.payments.payments = function () {
-  return Payments.find().fetch()
+  return Payments.find({}, {sort: [["created", "desc"]]}).fetch()
 }
 
 // Get the users for the template
@@ -216,10 +219,18 @@ Template.payment.fromnow = function (ms) {
   return moment(ms).fromNow()
 }
 
-// Turn an id into a gravatar URL
+// Turn an id into a image URL
 Template.purchase.getPicture = function (id) {
   if(Meteor.users.findOne({"_id": id})) {
     return Meteor.users.findOne({"_id": id}).profile.picture;
+  }
+}
+
+
+// Turn an id into a name
+Template.purchase.getName = function (id) {
+  if(Meteor.users.findOne({"_id": id})) {
+    return Meteor.users.findOne({"_id": id}).profile.name;
   }
 }
 
